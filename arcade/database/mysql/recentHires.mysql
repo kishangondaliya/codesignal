@@ -1,0 +1,38 @@
+/*Please add ; after each select statement*/
+CREATE PROCEDURE recentHires()
+BEGIN
+
+DROP TABLE IF EXISTS my_temp;
+CREATE TABLE my_temp (id  int PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255));
+
+INSERT INTO my_temp 
+  SELECT NULL, r.name
+  FROM ( SELECT name
+         FROM pr_department
+         order by date_joined desc
+         limit 5) r
+  ORDER by r.name asc;
+
+
+INSERT INTO my_temp 
+  SELECT NULL, r.name
+  FROM ( SELECT name
+         FROM it_department
+         order by date_joined desc
+         limit 5) r
+  ORDER by r.name asc;
+
+INSERT INTO my_temp 
+  SELECT NULL, r.name
+  FROM ( SELECT name
+         FROM sales_department
+         order by date_joined desc
+         limit 5) r
+  ORDER by r.name asc;
+
+
+SELECT name as names from my_temp order by id asc;
+
+
+
+END

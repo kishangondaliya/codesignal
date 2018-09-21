@@ -1,0 +1,8 @@
+/*Please add ; after each select statement*/
+CREATE PROCEDURE suspectsInvestigation2()
+BEGIN
+	SELECT id, name, surname 
+    FROM Suspect
+    where height <= 170 or upper(surname) not like 'gre_n' or upper(name) not like 'B%'
+    order by id;
+END

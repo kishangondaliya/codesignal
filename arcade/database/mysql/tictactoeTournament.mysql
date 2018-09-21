@@ -1,0 +1,58 @@
+/*Please add ; after each select statement*/
+
+
+CREATE PROCEDURE tictactoeTournament()
+BEGIN
+	
+DECLARE n INT;
+DECLARE i INT;
+DECLARE p1 varchar(255);
+DECLARE p2 varchar(255);
+DECLARE b varchar(255);
+SET n = 0;
+SET i = 0;
+
+
+DROP TABLE IF EXISTS res;
+CREATE TABLE res (
+    name varchar(255),
+    win int,
+    loss int,
+    deus int
+);
+
+SET n = (select COUNT(*) FROM results);
+
+
+WHILE i < n DO
+  set p1 = (select name_naughts FROM results limit i, 1);
+  set p2 = (select name_crosses FROM results limit i, 1);
+  set b =(select board FROM results limit i,1);
+
+  IF b LIKE "XXX______" or b LIKE "______XXX" 
+    or b LIKE "___XXX___" or b LIKE "X__X__X__" or b LIKE "_X__X__X_"
+    or b like "__X__X__X" or b like "__X_X_X__" or b like "X___X___X"
+    THEN
+    INSERT INTO res VALUES (p2,1,0,0);
+    INSERT INTO res VALUES (p1,0,1,0);
+  ELSEIF b LIKE "OOO______" or b LIKE "______OOO" 
+    or b LIKE "___OOO___" or b LIKE "O__O__O__" or b LIKE "_O__O__O_"
+    or b like "__O__O__O" or b like "__O_O_O__" or b like "O___O___O" 
+      THEN
+        INSERT INTO res VALUES (p2,0,1,0);
+       INSERT INTO res VALUES (p1,1,0,0);
+  ELSE 
+        INSERT INTO res VALUES (p2,0,0,1);
+       INSERT INTO res VALUES (p1,0,0,1);
+  END IF;
+
+  SET i = i + 1;
+END WHILE;
+
+select name, sum(win*2+ deus) as points ,sum(win + deus + loss) as played, sum(win) as won, sum(deus) as draw , sum(loss) as lost from res 
+group by name 
+order by 
+points DESC,
+played ASC,
+won DESC, name ASC;
+END

@@ -1,0 +1,13 @@
+/*Please add ; after each select statement*/
+CREATE PROCEDURE placesOfInterestPairs()
+BEGIN
+
+
+select  s1.name as place1, s2.name as place2
+from sights s1 
+cross join sights s2
+where sqrt( POWER(s1.x-s2.x, 2) + POWER(s1.y-s2.y, 2)) != 0 and sqrt( POWER(s1.x-s2.x, 2) + POWER(s1.y-s2.y, 2)) < 5 and s1.name < s2.name
+order by s1.name, s2.name
+;
+
+END

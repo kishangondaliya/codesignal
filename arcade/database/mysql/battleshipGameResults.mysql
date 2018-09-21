@@ -1,0 +1,94 @@
+
+DROP FUNCTION IF EXISTS find_size;
+CREATE FUNCTION find_size(x1 INT, y1 INT, x2 INT, y2 INT) RETURNS INT 
+BEGIN
+    DECLARE res INT;
+    SET res = 0;
+    IF x1 = x2 THEN 
+        set res = (SELECT ABS(y2-y1) + 1);
+        RETURN res; 
+    END IF;
+    IF y1 = y2 THEN 
+        set res = (SELECT ABS(x2-x1) + 1);
+        RETURN res; 
+    END IF;
+RETURN -1;
+END;
+
+
+/*Please add ; after each select statement*/
+CREATE PROCEDURE battleshipGameResults()
+BEGIN
+
+
+DECLARE n INT DEFAULT 0;
+DECLARE i INT DEFAULT 0;
+DECLARE x1 INT;
+DECLARE x2 INT;
+DECLARE y1 INT;
+DECLARE y2 INT;
+
+
+DROP TABLE IF EXISTS game;
+CREATE TABLE game (
+    id INT,
+    x INT,
+    y INT
+);
+
+SET n = (SELECT COUNT(*) FROM locations_of_ships);
+
+
+
+WHILE i<n DO
+    
+   SET x1 = (SELECT upper_left_x FROM locations_of_ships LIMIT i, 1);
+   SET y1 = (SELECT upper_left_y FROM locations_of_ships LIMIT i, 1);
+   SET x2 = (SELECT bottom_right_x FROM locations_of_ships LIMIT i, 1);
+   SET y2 = (SELECT bottom_right_y FROM locations_of_ships LIMIT i, 1);
+  /*INSERT INTO table_B(ID, VAL) VALUES(ID, VAL) FROM table_A LIMIT i,1;*/
+    IF y1 = y2 THEN 
+        WHILE x1 <= x2 DO
+            INSERT INTO game VALUES(i+1,x1, y1);
+            SET x1 = x1 + 1;
+        END WHILE;
+    END IF;
+    IF x1 = x2 THEN 
+        WHILE y1 <= y2 DO
+            INSERT INTO game VALUES(i+1,x1, y1);
+            SET y1 = y1 + 1;
+        END WHILE;
+    END IF;
+  SET i = i + 1;
+END WHILE;
+
+
+
+
+SELECT nn.size, SUM(iF(nn.num_of_dam is NULL, 1,0)) as undamaged,SUM(iF(nn.num_of_dam < nn.size, 1,0)) as partly_damaged, SUM(iF(nn.size = nn.num_of_dam, 1,0)) as sunk
+FROM (
+ SELECT l.id, find_size(l.upper_left_x, l.upper_left_y, l.bottom_right_x,l.bottom_right_y ) as  size, dam.num_of_dam as num_of_dam
+ FROM locations_of_ships l
+ LEFT JOIN (
+ SELECT tmp.id, COUNT(*) num_of_dam
+FROM (
+ SELECT g.id as id, s.target_x, s.target_y as tg
+ FROM game g
+ LEFT JOIN opponents_shots s
+ ON g.x = s.target_x AND g.y = s.target_y
+    ) tmp
+where tmp.tg is not null
+group by tmp.id
+    ) dam
+on l.id=dam.id) nn 
+group by nn.size
+;
+    
+/* first function return ship size
+SELECT *, find_size(upper_left_x, upper_left_y, bottom_right_x,bottom_right_y ) as size
+FROM locations_of_ships;*/
+
+
+
+	
+END

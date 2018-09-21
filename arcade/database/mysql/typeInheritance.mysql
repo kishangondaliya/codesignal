@@ -1,0 +1,70 @@
+/*Please add ; after each select statement*/
+DROP FUNCTION IF EXISTS find_base; 
+
+DROP TABLE IF EXISTS memo;
+CREATE TABLE memo (
+    type TEXT
+)
+;
+
+CREATE FUNCTION find_base(str_d TEXT) RETURNS INT
+BEGIN
+
+DECLARE i int;
+
+DECLARE strd TEXT;
+
+/*DECLARE T INT;*/
+SET strd = str_d;
+set i =0;
+/*
+SET T =(SELECT COUNT(*) FROM (SELECT type FROM memo where type=str_d) useless );
+
+
+IF T > 0 THEN 
+    RETURN 42;
+END IF;*/
+
+
+/*
+LOOP
+     DROP TABLE IF EXISTS memo2;
+     CREATE TEMPORARY TABLE memo2 (
+        type TEXT
+        );
+     SET strd =(SELECT base from inheritance where derived=strd);
+     INSERT INTO memo2 values (strd);
+     IF  strd  is NULL THEN
+         RETURN 1;
+     END IF;
+     IF  strd = 'NUMBER' THEN
+         INSERT INTO memo VALUES(str_d);
+         INSERT INTO memo VALUES (select * from memo2);
+         RETURN 42;
+     END IF;
+END LOOP;*/
+   WHILE i < 2000 DO
+     SET str_d =(SELECT base from inheritance where derived=str_d);
+     IF  str_d  is NULL THEN
+         RETURN 1;
+     END IF;
+     IF  str_d = 'NUMBER' THEN
+         RETURN 42;
+     END IF;
+    IF  i > 100 THEN
+         RETURN 42;
+     END IF;
+     SET i = i +1;
+   END WHILE;
+END;
+
+
+CREATE PROCEDURE typeInheritance()
+BEGIN
+
+        
+
+SELECT var_name, type as var_type
+FROM variables
+WHERE find_base(type) = 42;
+END

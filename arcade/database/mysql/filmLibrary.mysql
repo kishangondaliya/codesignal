@@ -1,0 +1,21 @@
+/*Please add ; after each select statement*/
+CREATE PROCEDURE filmLibrary()
+BEGIN
+	
+
+set @genrea=(SELECT genre
+FROM movies
+group by genre 
+order by count(genre) desc limit 1);
+
+SELECT a.actor, a.age
+FROM actor_ages a
+JOIN starring_actors s
+ON s.actor=a.actor
+JOIN movies m 
+ON m.movie=s.movie_name and m.genre=@genrea
+order by a.age desc,a.actor;
+
+
+
+END

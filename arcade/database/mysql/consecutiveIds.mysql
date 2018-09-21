@@ -1,0 +1,17 @@
+/*Please add ; after each select statement*/
+CREATE PROCEDURE consecutiveIds()
+BEGIN
+
+DROP TABLE IF EXISTs new_ids;
+
+CREATE TABLE new_ids (oldId int, newId int not null AUTO_INCREMENT, PRIMARY KEY(newId) );
+
+
+INSERT INTO new_ids
+SELECT id , NULL
+FROM itemIds;
+
+SELECT oldId, newId FROM new_ids;
+
+
+END

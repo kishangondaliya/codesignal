@@ -1,0 +1,7 @@
+/*Please add ; after each select statement*/
+CREATE PROCEDURE importantEvents()
+BEGIN
+    SELECT id, name, event_date, participants
+    FROM events
+    order by WEEKDAY(event_date), participants desc;
+END

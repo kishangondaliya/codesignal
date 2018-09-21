@@ -1,0 +1,33 @@
+/*Please add ; after each select statement*/
+CREATE PROCEDURE routeLength()
+BEGIN
+	
+set @ctn := 1;
+SET @len := (SELECT COUNT(*) FROM cities);
+
+SET @xa := 0;
+SET @ya := 0;
+
+SET @xb := 0;
+SET @yb := 0;
+
+SET @res :=0;
+
+WHILE @ctn < @len DO
+
+     SET @xa := (SELECT x FROM cities where id=@ctn);
+     SET @ya := (SELECT y FROM cities where id=@ctn);
+     SET @xb := (SELECT x FROM cities where id=@ctn+1);
+     SET @yb := (SELECT y FROM cities where id=@ctn+1);
+          
+     SET @res := @res + SQRT((POWER((@xa-@xb), 2) + POWER((@ya-@yb), 2)));
+     SET @ctn :=  @ctn + 1;
+  
+   END WHILE;
+
+
+   SELECT ROUND(@res,9) as total; 
+
+
+
+END

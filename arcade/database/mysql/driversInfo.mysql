@@ -1,0 +1,48 @@
+/*Please add ; after each select statement*/
+CREATE PROCEDURE driversInfo()
+BEGIN
+
+DECLARE done BOOLEAN DEFAULT 0;
+DECLARE d_name VARCHAR(255) DEFAULT "";
+DECLARE d_date DATE;
+DECLARE d_miles_logged INT DEFAULT 0;
+DECLARE current_driver_name VARCHAR(255) DEFAULT "";
+
+DECLARE cur CURSOR FOR
+SELECT driver_name, date, miles_logged 
+FROM inspections
+ORDER BY driver_name, date;
+
+DECLARE CONTINUE HANDLER 
+        FOR NOT FOUND SET done = 1;
+
+DROP TABLE IF EXISTS summary;
+CREATE TABLE summary (str VARCHAR(255));
+
+SET @total := (SELECT SUM(miles_logged) FROM inspections);
+
+INSERT INTO summary VALUES (CONCAT(' Total miles driven by all drivers combined: ', @total));
+
+OPEN cur;
+get_driver: LOOP
+FETCH cur INTO d_name, d_date, d_miles_logged;
+ IF done = 1 THEN 
+  LEAVE get_driver;
+ END IF;
+
+IF current_driver_name <> d_name THEN
+SET @sum := (SELECT SUM(miles_logged) FROM inspections where driver_name=d_name);
+SET @ct := (SELECT count(*) FROM inspections where driver_name=d_name);
+INSERT INTO summary values (CONCAT(" Name: ",d_name,";"," number of inspections: ", @ct,";" , " miles driven: ", @sum));
+SET current_driver_name := d_name;
+END IF;
+
+INSERT INTO summary VALUES(CONCAT("  date: ", d_date, "; miles covered: ", d_miles_logged));
+
+  
+END LOOP get_driver;
+CLOSE cur;
+
+SELECT str as summary FROM summary;
+
+END

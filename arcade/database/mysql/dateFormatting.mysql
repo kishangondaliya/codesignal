@@ -1,0 +1,8 @@
+/*Please add ; after each select statement*/
+CREATE PROCEDURE dateFormatting()
+BEGIN
+	SELECT STR_TO_DATE(date_str, '%Y-%m-%d') as date_iso
+    FROM documents
+    order by id 
+;
+END

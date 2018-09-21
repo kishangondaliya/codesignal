@@ -1,0 +1,9 @@
+/*Please add ; after each select statement*/
+CREATE PROCEDURE itemCounts()
+BEGIN
+	select item_name, item_type, count(item_name) as item_count
+    FROM availableItems
+    group by item_type, item_name
+order by item_type
+;
+END

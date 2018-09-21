@@ -1,0 +1,16 @@
+/*Please add ; after each select statement*/
+CREATE PROCEDURE salaryDifference()
+BEGIN
+
+SET @max_salary := (SELECT salary FROM employees order by salary desc limit 1);
+SET @max_count := (SELECT COUNT(*) FROM employees where salary=@max_salary);
+
+
+SET @min_salary := (SELECT salary FROM employees order by salary asc limit 1);
+SET @min_count := (SELECT COUNT(*)FROM employees where salary=@min_salary);
+
+-- SELECT @max_count;
+
+SELECT COALESCE((@max_salary*@max_count) - (@min_salary*@min_count), 0) as difference; 
+
+END

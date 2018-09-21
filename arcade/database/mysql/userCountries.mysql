@@ -1,0 +1,9 @@
+/*Please add ; after each select statement*/
+CREATE PROCEDURE userCountries()
+BEGIN
+SELECT u.id, CASE WHEN c.country IS NULL THEN 'unknown' ELSE c.country END as country
+FROM users u
+LEFT JOIN cities c
+on u.city=c.city
+order by u.id asc;
+END

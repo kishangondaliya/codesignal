@@ -1,0 +1,32 @@
+
+
+
+/*Please add ; after each select statement*/
+CREATE PROCEDURE unluckyEmployees()
+BEGIN
+SET @rowid = 0;
+
+    SELECT a.dep_name, 
+    CASE WHEN a.emp_number is NULL THEN 0 ELSE a.emp_number END as emp_number, 
+    CASE WHEN a.total_salary IS NULL THEN 0 ELSE a.total_salary END as total_salary
+    FROM (
+    SELECT tmp.*,@rowid := @rowid + 1 as rowid
+    FROM (
+            SELECT 
+                    d.name as dep_name ,
+                    count(e.department) as emp_number, 
+                    sum(e.salary) as total_salary
+            FROM Employee e
+            RIGHT JOIN Department d
+             ON e.department=d.id
+            GROUP by d.id
+            having COUNT(e.department) < 6
+            ORDER BY     sum(e.salary) desc,
+                         emp_number desc, 
+                         d.id asc 
+          ) tmp
+        ) a  
+   where a.rowid % 2 != 0;
+    
+
+END
