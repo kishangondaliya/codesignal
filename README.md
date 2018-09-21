@@ -1,1 +1,1 @@
-# codesignal
+# codesignal solutions
