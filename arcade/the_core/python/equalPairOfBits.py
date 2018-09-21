@@ -1,0 +1,2 @@
+def equalPairOfBits(n, m):
+    return 2 ** [i for i in range(min(len(bin(n)[2:].zfill(30)), len(bin(m)[2:].zfill(30)))) if bin(n)[2:].zfill(30)[::-1][i] == bin(m)[2:].zfill(30)[::-1][i] == '1' or  bin(n)[2:].zfill(30)[::-1][i] == bin(m)[2:].zfill(30)[::-1][i] == '0'][0] if len([i for i in range(min(len(bin(n)[2:].zfill(30)), len(bin(m)[2:].zfill(30)))) if bin(n)[2:].zfill(30)[::-1][i] == bin(m)[2:].zfill(30)[::-1][i] == '1' or  bin(n)[2:].zfill(30)[::-1][i] == bin(m)[2:].zfill(30)[::-1][i] == '0']) > 0 else 2 ** 0    
